@@ -17,3 +17,5 @@ server.listen(port, function(){
     console.log("Back-end está rodando!");
 
 })
+
+module.exports=server
