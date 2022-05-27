@@ -1,5 +1,7 @@
 import axios from "axios";
 import { toastr } from "react-redux-toastr";
+import { reset as resetForm } from 'redux-form';
+import { showTabs, selectTab } from "../common/tab/tabActions";
 
 const BASE_URL = 'http://localhost:3000/api';
 
@@ -17,23 +19,32 @@ export function getList(){
 
 export function createData(values){
 
-    axios.post(`${BASE_URL}/billingCycles`, values).then(resp=>{
+    return dispatch=>{
 
-        toastr.success('Sucesso', 'Operação realizada com sucesso!');
+        axios.post(`${BASE_URL}/billingCycles`, values).then(resp=>{
 
-    }).catch(e=>{
+            toastr.success('Sucesso', 'Operação realizada com sucesso!');
+            dispatch([
 
-        e.response.data.errors.forEach(error=>{
+                resetForm('billingCycleForm'),
+                getList(),
+                selectTab('tabList'),
+                showTabs('tabList', 'tabCreate')
 
-            toastr.error('Erro', error)
+            ])//Esse dispatch só recebe um Array por conta do Redux-Multi
+    
+        }).catch(e=>{
+    
+            e.response.data.errors.forEach(error=>{
+    
+                toastr.error('Erro', error)
+    
+            })
+    
+        }) 
 
-        })
+    }
 
-    })
-    return{
-
-        type: 'TEMP'
-
-    }    
+    
 
 }
