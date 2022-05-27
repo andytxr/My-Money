@@ -1,4 +1,5 @@
 import axios from "axios";
+import { toastr } from "react-redux-toastr";
 
 const BASE_URL = 'http://localhost:3000/api';
 
@@ -11,5 +12,28 @@ export function getList(){
         payload: request
 
     }
+
+}
+
+export function createData(values){
+
+    axios.post(`${BASE_URL}/billingCycles`, values).then(resp=>{
+
+        toastr.success('Sucesso', 'Operação realizada com sucesso!');
+
+    }).catch(e=>{
+
+        e.response.data.errors.forEach(error=>{
+
+            toastr.error('Erro', error)
+
+        })
+
+    })
+    return{
+
+        type: 'TEMP'
+
+    }    
 
 }

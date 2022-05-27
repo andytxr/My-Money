@@ -5,9 +5,12 @@ class BillingCycleForm extends Component {
 
     render(){
 
+        const {handleSubmit} = this.props;
+
+
         return(
 
-            <form role='form'>
+            <form role='form' onSubmit={handleSubmit}>
                 <div className="box-body">
                     <Field name='name' component='input'></Field>
                     <Field name='month' component='input'></Field>
