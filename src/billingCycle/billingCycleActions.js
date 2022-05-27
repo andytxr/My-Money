@@ -7,7 +7,8 @@ import BillingCycles from './billingCycle';
 const BASE_URL = 'http://localhost:3000/api';
 const INITIAL_VALUES = {
 
-    credits:[{}]
+    credits:[{}],
+    debits: [{}]
 
 }
 

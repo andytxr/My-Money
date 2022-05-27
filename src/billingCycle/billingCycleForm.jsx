@@ -4,15 +4,29 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
 import LabelInput from "../common/form/labelInput";
-import CreditList from "./creditList";
+import ItemList from "./itemList";
+import Summary from "./summary";
+
 import { init } from './billingCycleActions'
 
 class BillingCycleForm extends Component {
 
+    calcSum(){
+
+        let sum = (t, v) => t + v
+        return {
+
+            sumCred: this.props.credits.map(credit=>+credit.value || 0).reduce(sum),
+            sumDeb: this.props.debits.map(debit=>+debit.value || 0).reduce(sum)
+
+        }
+
+    }
+
     render(){
 
-        const {handleSubmit, readOnly, credits} = this.props
-
+        const {handleSubmit, readOnly, credits, debits} = this.props;
+        const {sumCred, sumDeb} = this.calcSum()
 
         return(
 
@@ -24,7 +38,9 @@ class BillingCycleForm extends Component {
                     cols='12 4' placeholder='Informe o mês' type='number' readOnly={readOnly}></Field>
                     <Field name='year' component={LabelInput} label='Ano'
                     cols='12 4' placeholder="Informe o ano" type='number' readOnly={readOnly}></Field>
-                    <CreditList cols='12 6' list={credits} readOnly={readOnly}></CreditList>
+                    <Summary credit={sumCred.toFixed(2)} debit={sumDeb.toFixed(2)}></Summary>
+                    <ItemList cols='12 6' list={credits} readOnly={readOnly} field='credits' legend='Créditos'></ItemList>
+                    <ItemList cols='12 6' list={debits} readOnly={readOnly} field='debits' legend='Débitos' showStatus={true}></ItemList>
                </div>
                 <div className="box-footer">
                     <button type='submit' className={`btn btn-${this.props.submitClass}`}>{this.props.submitLabel}</button>
@@ -49,7 +65,8 @@ const selector = formValueSelector('billingCycleForm')
 
 const mapStateToProps = state => ({
     
-    credits: selector(state, 'credits')
+    credits: selector(state, 'credits'),
+    debits: selector(state, 'debits')
 
 })
 
