@@ -45,7 +45,11 @@ const mapStateToProps = state => ({
 
 })
 
-const mapDispatchToProps = dispatch => bindActionCreators({getSummary}, dispatch)
+const mapDispatchToProps = dispatch => bindActionCreators({
+    
+    getSummary
+
+}, dispatch)
 
 
 
