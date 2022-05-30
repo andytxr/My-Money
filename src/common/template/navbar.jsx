@@ -28,9 +28,15 @@ class Navbar extends Component{
 
     render(){
 
+        if(!this.props.user){
+
+            return false
+
+        }
+
         const {email, name} = this.props.user;
 
-        return (
+        return(
 
             <div className="navbar-custom-menu">
                 <ul className="nav navbar-nav">

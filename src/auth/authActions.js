@@ -10,7 +10,7 @@ export function signup(values){
 
 export function login(values){
 
-    return submit(values, `${consts.API_URL}/login`)
+    return submit(values, `${consts.OAPI_URL}/login`)
 
 }
 
