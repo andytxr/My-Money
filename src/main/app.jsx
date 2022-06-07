@@ -13,12 +13,12 @@ export default props => {
 
         <HashRouter>
             <div className='wrapper'>
-            <Header></Header>
-            <Sidebar></Sidebar>
-            <Routes></Routes>
-            <Footer></Footer>
-            <Messages></Messages>
-        </div>
+                <Header></Header>
+                <Sidebar></Sidebar>
+                <Routes></Routes>
+                <Footer></Footer>
+                <Messages></Messages>
+            </div>
         </HashRouter>
         
     )

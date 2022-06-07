@@ -73,7 +73,7 @@ function submit(values, url){
 
                 {
 
-                    type: 'USER_FETFCHED',
+                    type: 'USER_FETCHED',
                     payload: resp.data
                 
                 }

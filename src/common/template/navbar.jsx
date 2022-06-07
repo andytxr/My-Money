@@ -34,7 +34,7 @@ class Navbar extends Component{
 
         }
 
-        const {email, name} = this.props.user;
+        const {name, email} = this.props.user;
 
         return(
 
