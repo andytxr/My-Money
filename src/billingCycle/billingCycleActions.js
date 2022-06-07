@@ -1,21 +1,21 @@
-import axios from "axios";
-import { toastr } from "react-redux-toastr";
+import axios from 'axios';
+import { toastr } from 'react-redux-toastr';
 import { reset as resetForm, initialize } from 'redux-form';
-import { showTabs, selectTab } from "../common/tab/tabActions";
-import BillingCycles from './billingCycle';
+import { showTabs, selectTab } from '../common/tab/tabActions';
 
-const BASE_URL = 'http://localhost:3000/api';
+const BASE_URL = 'http://localhost:3003/api';
 const INITIAL_VALUES = {
-
-    credits:[{}],
+    
+    credits: [{}], 
     debits: [{}]
 
 }
 
-export function getList(){
+export function getList() {
 
-    let request = axios.get(`${BASE_URL}/billingCycles`);
-    return{
+    const request = axios.get(`${BASE_URL}/billingCycles`);
+
+    return {
 
         type: 'BILLING_CYCLES_FETCHED',
         payload: request
@@ -24,74 +24,68 @@ export function getList(){
 
 }
 
-function submit(values, method){
-
-    return dispatch=>{
-
-        let id = values._id ? values._id : '';
-
-        axios[method](`${BASE_URL}/billingCycles/${id}`, values).then(resp=>{
-
-            toastr.success('Sucesso', 'Operação realizada com sucesso!');
-            dispatch(init());
-    
-        }).catch(e=>{
-
-            e.response.data.errors.forEach(error=>{
-    
-                toastr.error('Erro', error)
-    
-            })
-    
-        }) 
-
-    }    
-
-}
-
-export function createData(values){
+export function create(values) {
 
     return submit(values, 'post')
 
 }
 
-export function updateData(values){
+export function update(values) {
 
     return submit(values, 'put')
 
 }
 
-export function deleteData(values){
+export function remove(values) {
 
     return submit(values, 'delete')
 
 }
 
-function showTab(tab, billingCycle){
+function submit(values, method) {
 
-    return [
+    return dispatch => {
 
-        showTabs(tab),
-        selectTab(tab),
+        const id = values._id ? values._id : '';
+        axios[method](`${BASE_URL}/billingCycles/${id}`, values).then(resp => {
+
+            toastr.success('Sucesso', 'Operação Realizada com sucesso.');
+            dispatch(init());
+
+        }).catch(e => {
+
+            e.response.data.errors.forEach(error => toastr.error('Erro', error));
+
+        })
+
+        
+
+    }
+}
+
+export function showUpdate(billingCycle) {
+
+    return [ 
+
+        showTabs('tabUpdate'),
+        selectTab('tabUpdate'),
         initialize('billingCycleForm', billingCycle)
 
     ]
-
 }
 
-export function showUpdate(billingCycle){
+export function showDelete(billingCycle) {
 
-    return showTab('tabUpdate', billingCycle)
+    return [ 
 
+        showTabs('tabDelete'),
+        selectTab('tabDelete'),
+        initialize('billingCycleForm', billingCycle)
+
+    ]
 }
 
-export function showDelete(billingCycle){
-
-    return showTab('tabDelete', billingCycle)
-
-}
-
-export function init(){
+export function init() {
 
     return [
 
@@ -99,8 +93,6 @@ export function init(){
         selectTab('tabList'),
         getList(),
         initialize('billingCycleForm', INITIAL_VALUES)
-
+        
     ]
-
 }
-

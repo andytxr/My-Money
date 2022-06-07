@@ -1,31 +1,32 @@
-const INITAL_STATE = {
-
-    selected: '',
-    visible: {}
+const INITIAL_STATE = { 
     
+    selected: '', 
+    visible: {} 
+
 }
 
-export default (state = INITAL_STATE, action) => {
+export default (state = INITIAL_STATE, action) => {
 
-    switch(action.type){
+    switch (action.type) {
 
         case 'TAB_SELECTED':
-            return {
 
+            return { 
                 ...state,
-                selected: action.payload
-
+                 selected: action.payload 
+                
             }
+
         case 'TAB_SHOWED':
-            return{
 
-                ...state,
-                visible: action.payload
+            return { 
+                
+                ...state, 
+                visible: action.payload 
 
             }
+            
         default:
             return state
-
     }
-
 }

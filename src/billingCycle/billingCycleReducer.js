@@ -1,22 +1,21 @@
-const INITIAL_STATE = {
+const INITIAL_STATE = {list: []}
 
-    list: []
+export default (state = INITIAL_STATE, action) => {
 
-}
-
-export default(state = INITIAL_STATE, action) => {
-
-    switch(action.type){
+    switch (action.type) {
 
         case 'BILLING_CYCLES_FETCHED':
-            return{
 
-                ...state,
-                list: action.payload.data
-
+            return { 
+                
+                ...state, 
+                list: action.payload.data 
+            
             }
-        default: 
-            return state
-    }
 
+        default:
+
+            return state
+
+    }
 }
