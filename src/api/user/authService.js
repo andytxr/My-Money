@@ -1,7 +1,6 @@
 const _ = require('lodash');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-
 const User = require('./user');
 const env = require('../../.env');
 
@@ -11,14 +10,8 @@ const emailRegex = /\S+@\S+\.\S+/;
 const sendErrorsFromDB = (res, dbErrors) => {
 
     const errors = [];
-
     _.forIn(dbErrors.errors, error => errors.push(error.message));
-
-    return res.status(400).json({ 
-
-        errors
-
-    })
+    return res.status(400).json({ errors });
 
 }
 
@@ -27,61 +20,41 @@ const login = (req, res, next) => {
     const email = req.body.email || '';
     const password = req.body.password || '';
 
-    User.findOne({
+    User.findOne({ email }, (err, user) => {
 
-        email
-
-    }, (err, user) => {
-
-        if(err){
+        if (err) {
 
             return sendErrorsFromDB(res, err)
 
-        }else if(user && bcrypt.compareSync(password, user.password)){
+        } else if (user && bcrypt.compareSync(password, user.password)) {
 
-            const token = jwt.sign({...user}, env.authSecret, {
+            const token = jwt.sign(user.toJSON(), env.authSecret, {
 
-                expiresIn: '1 day'
+                expiresIn: "1 day"
 
             });
 
-            const {name, email} = user;
-            res.json({
-            
-                name,
-                email,
-                token
+            const { name, email } = user;
 
-            })
+            res.json({ name, email, token })
 
-        }else{
+        } else {
 
-            return res.status(400).send({
-
-                errors: ['Usuário/Senha inválidos']
-
-            })
+            return res.status(400).send({ errors: ['Usuário/Senha inválidos'] })
 
         }
-
-
     })
-
 }
 
 const validateToken = (req, res, next) => {
 
     const token = req.body.token || '';
-    jwt.verify(token, env.authSecret, function(err, decoded){
 
-        return res.status(200).send({
+    jwt.verify(token, env.authSecret, function (err, decoded) {
 
-            valid: !err
-                
-        })
+        return res.status(200).send({ valid: !err })
 
     })
-
 }
 
 const signup = (req, res, next) => {
@@ -91,78 +64,67 @@ const signup = (req, res, next) => {
     const password = req.body.password || '';
     const confirmPassword = req.body.confirm_password || '';
 
-    if(!email.match(emailRegex)){
+    if (!email.match(emailRegex)) {
+
+        return res.status(400).send({ errors: ['O e-mail informado está inválido'] })
+
+    }
+
+    /*if (!password.match(passwordRegex)) {
 
         return res.status(400).send({
 
-            errors: ['O e-mail informado está inválido']
+            errors: [
+
+                "Senha precisar ter: uma letra maiúscula, uma letra minúscula, um número, uma caractere especial(@#$ %) e tamanho entre 6-20."
+            ]
 
         })
+    }*/
 
-    }
-    
     const salt = bcrypt.genSaltSync();
     const passwordHash = bcrypt.hashSync(password, salt);
 
-    if(!bcrypt.compareSync(confirmPassword, passwordHash)){
+    if (!bcrypt.compareSync(confirmPassword, passwordHash)) {
 
-        return res.status(400).send({
-
-            errors: ['Senhas não conferem']
-
-        })
+        return res.status(400).send({ errors: ['Senhas não conferem.'] })
 
     }
 
-    User.findOne({
+    User.findOne({ email }, (err, user) => {
 
-        email
-        
-    }, (err, user)=>{
-
-        if(err){
+        if (err) {
 
             return sendErrorsFromDB(res, err)
 
-        }else if (user){
+        } else if (user) {
 
-            return res.status(400).send({
+            return res.status(400).send({ errors: ['Usuário já cadastrado.'] })
 
-                errors: ['Usuário já cadastrado']
+        } else {
 
-            })
-
-        }else {
-
-            const newUser = new User({
-
-                name,
-                email,
-                password: passwordHash
-
-            })
-            newUser.save(err=>{
+            const newUser = new User({ 
                 
-                if(err){
+                name, 
+                email, 
+                password: passwordHash 
+            
+            })
+
+            newUser.save(err => {
+
+                if (err) {
 
                     return sendErrorsFromDB(res, err)
 
-                }else {
+                } else {
 
                     login(req, res, next)
 
                 }
-
             })
-
         }
-
     })
-
-}   
-
-module.exports = {
-
-    login, signup, validateToken
-
 }
+
+module.exports = { login, signup, validateToken }

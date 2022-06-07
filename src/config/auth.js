@@ -1,9 +1,9 @@
-const jwt = require('jsonwebtoken');
-const env = require('../.env');
+const jwt = require('jsonwebtoken')
+const env = require('../.env')
 
 module.exports = (req, res, next) => {
 
-    if(req.method === 'OPTIONS'){
+    if (req.method === 'OPTIONS') {
 
         next()
 
@@ -11,19 +11,15 @@ module.exports = (req, res, next) => {
 
         const token = req.body.token || req.query.token || req.headers['authorization'];
 
-        if(!token){
+        if (!token) {
 
-            return res.status(403).send({
-
-                errors: ['No token provided.']
-                
-            })
+            return res.status(403).send({ errors: ['No token provided.'] })
 
         }
 
-        jwt.verify(token, env.authSecret, function(err, decoded){
+        jwt.verify(token, env.authSecret, function (err, decoded) {
 
-            if(err){
+            if (err) {
 
                 return res.status(403).send({
 
@@ -31,9 +27,10 @@ module.exports = (req, res, next) => {
 
                 })
 
-            }else{
+            } else {
 
-                next
+                req.decoded = decoded;
+                next()
 
             }
 
